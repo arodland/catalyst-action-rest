@@ -19,7 +19,15 @@ sub execute {
         return;
     }
 
-    return $c->view($view)->process($c);
+    if ($c->view($view)->process($c)) {
+      return 1;
+    } else {
+      # This is stupid. Please improve it.
+      my $error = join("\n", @{ $c->error }) || "Error in $view";
+      $error .= "\n";
+      $c->clear_errors;
+      die $error;
+    }
 }
 
 1;
